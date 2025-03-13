@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Navbar } from "@/components/Navbar";
 import { useToast } from "@/components/ui/use-toast";
@@ -36,20 +36,7 @@ export default function DashboardPage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (status !== "authenticated") return;
-      
-      await Promise.all([
-        fetchUserImages(),
-        fetchLikedImages()
-      ]);
-    };
-
-    fetchUserData();
-  }, [session, status]);
-
-  const fetchLikedImages = async () => {
+  const fetchLikedImages = useCallback(async () => {
     if (!session?.user?.email) return;
     
     try {
@@ -68,9 +55,9 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error fetching liked images:', error);
     }
-  };
+  }, [session?.user?.email]);
 
-  const fetchUserImages = async () => {
+  const fetchUserImages = useCallback(async () => {
     if (!session?.user?.email) return;
       
     try {
@@ -96,7 +83,20 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session?.user?.email, toast]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (status !== "authenticated") return;
+      
+      await Promise.all([
+        fetchUserImages(),
+        fetchLikedImages()
+      ]);
+    };
+
+    fetchUserData();
+  }, [status, fetchUserImages, fetchLikedImages]);
 
   const handleLikeToggle = async (imageId: string, isLiked: boolean) => {
     if (!session?.user) {
