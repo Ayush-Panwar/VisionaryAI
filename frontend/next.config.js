@@ -6,6 +6,7 @@ const nextConfig = {
       'lh3.googleusercontent.com', // For Google profile pictures
       'res.cloudinary.com', // For Cloudinary hosted images
       'localhost', // For local development
+      'oaidalleapiprodscus.blob.core.windows.net', // For OpenAI DALL-E generated images
     ],
     // Optimize image formats
     formats: ['image/avif', 'image/webp'],
