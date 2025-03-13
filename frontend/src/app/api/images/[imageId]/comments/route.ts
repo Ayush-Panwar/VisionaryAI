@@ -11,16 +11,22 @@ export async function GET(
     const imageId = params.imageId;
     
     // Call the backend API to get comments
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log(`Fetching comments from: ${backendUrl}/images/${imageId}/comments`);
+    
     const response = await fetch(`${backendUrl}/images/${imageId}/comments`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
+      cache: 'no-store'
     });
     
     if (!response.ok) {
-      throw new Error('Failed to fetch comments');
+      const errorText = await response.text();
+      console.error(`Error response from backend: ${response.status} - ${errorText}`);
+      throw new Error(`Failed to fetch comments: ${response.status}`);
     }
     
     const data = await response.json();
@@ -52,21 +58,27 @@ export async function POST(
     const body = await request.json();
     
     // Call the backend API to create a comment
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log(`Creating comment at: ${backendUrl}/images/${imageId}/comments`);
+    
     const response = await fetch(`${backendUrl}/images/${imageId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify({
         text: body.text,
         userId: body.userId,
         userName: body.userName
       }),
+      cache: 'no-store'
     });
     
     if (!response.ok) {
-      throw new Error('Failed to create comment');
+      const errorText = await response.text();
+      console.error(`Error response from backend: ${response.status} - ${errorText}`);
+      throw new Error(`Failed to create comment: ${response.status}`);
     }
     
     const data = await response.json();

@@ -95,14 +95,22 @@ export function ImageDetailDialog({
     try {
       setIsLoadingComments(true);
       
-      // Replace with your actual API endpoint
-      const response = await fetch(`/api/images/${image.id}/comments`);
+      // Use absolute URL with API prefix
+      const response = await fetch(`/api/images/${image.id}/comments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      });
       
       if (!response.ok) {
+        console.error(`Error fetching comments: ${response.status}`);
         throw new Error('Failed to fetch comments');
       }
       
       const data = await response.json();
+      console.log('Comment data received:', data);
       setComments(data.comments || []);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -216,7 +224,7 @@ export function ImageDetailDialog({
     try {
       setIsSubmittingComment(true);
       
-      // Replace with your actual API endpoint
+      // Use absolute URL with API prefix
       const response = await fetch(`/api/images/${image.id}/comments`, {
         method: 'POST',
         headers: {
@@ -224,23 +232,25 @@ export function ImageDetailDialog({
         },
         body: JSON.stringify({ 
           text: newComment,
-          userId: session.user.id,
-          userName: session.user.name,
+          userId: session.user.email || session.user.id,
+          userName: session.user.name || 'Anonymous User',
         }),
+        cache: 'no-store'
       });
       
       if (!response.ok) {
+        console.error(`Error submitting comment: ${response.status}`);
         throw new Error('Failed to submit comment');
       }
       
-      // Add the new comment to the list (optimistic update)
       const data = await response.json();
+      console.log('Comment submission response:', data);
       setComments([...comments, data.comment]);
-      setNewComment(''); // Clear input
+      setNewComment('');
       
       toast({
         title: "Success",
-        description: "Comment added successfully",
+        description: "Your comment has been posted",
       });
     } catch (error) {
       console.error('Error submitting comment:', error);
