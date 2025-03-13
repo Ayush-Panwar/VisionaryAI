@@ -51,9 +51,6 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 # Database (if using Prisma)
 DATABASE_URL=your-database-connection-string
 
-# Cloudinary
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
-NEXT_PUBLIC_CLOUDINARY_API_KEY=your-api-key
 ```
 
 ### 3. Deploy Frontend to Vercel
