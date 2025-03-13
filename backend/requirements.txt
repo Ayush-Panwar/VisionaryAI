@@ -2,7 +2,7 @@ fastapi==0.108.0
 uvicorn==0.25.0
 python-dotenv==1.0.0
 pydantic==2.5.2
-httpx==0.26.0
+httpx==0.24.1
 python-multipart==0.0.7
 psycopg2-binary==2.9.9
 gunicorn==21.2.0
