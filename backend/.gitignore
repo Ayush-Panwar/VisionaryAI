@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Dependency directories
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and debug files
+logs/
+*.log
+
+# Environment variables and secrets
+.env
+*.secret
+config.json
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Pytest and coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+
+# Database files
+*.sqlite3
+*.db
