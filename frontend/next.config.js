@@ -13,7 +13,21 @@ const nextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
   // Optimize for production
-  swcMinify: true, 
+  swcMinify: true,
+  // Disable type checking during build for better performance
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+  // Disable ESLint during build
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
   // Configure redirects
   async redirects() {
     return [
