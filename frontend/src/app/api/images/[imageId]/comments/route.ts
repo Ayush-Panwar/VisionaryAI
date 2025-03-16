@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getApiUrl } from '@/lib/utils';
 
 // GET /api/images/[imageId]/comments
 export async function GET(
@@ -17,7 +18,7 @@ export async function GET(
     }
     
     // Call the backend API to get comments
-    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = getApiUrl();
     console.log(`Fetching comments from: ${backendUrl}/images/${imageId}/comments`);
     
     const response = await fetch(`${backendUrl}/images/${imageId}/comments`, {
@@ -26,7 +27,7 @@ export async function GET(
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      cache: 'no-store'
+      next: { revalidate: 0 }
     });
     
     if (!response.ok) {
@@ -71,7 +72,7 @@ export async function POST(
     const body = await request.json();
     
     // Call the backend API to create a comment
-    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = getApiUrl();
     console.log(`Creating comment at: ${backendUrl}/images/${imageId}/comments`);
     
     const response = await fetch(`${backendUrl}/images/${imageId}/comments`, {
@@ -85,7 +86,7 @@ export async function POST(
         userId: body.userId,
         userName: body.userName
       }),
-      cache: 'no-store'
+      next: { revalidate: 0 }
     });
     
     if (!response.ok) {

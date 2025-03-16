@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getApiUrl } from '@/lib/utils';
 
 // GET /api/images/[imageId]
 export async function GET(
@@ -15,7 +16,7 @@ export async function GET(
     }
 
     // Call the backend API to get the image
-    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = getApiUrl();
     console.log(`Fetching image from: ${backendUrl}/images/${imageId}`);
     
     const response = await fetch(`${backendUrl}/images/${imageId}`, {
@@ -24,7 +25,7 @@ export async function GET(
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      cache: 'no-store'
+      next: { revalidate: 0 }
     });
 
     if (!response.ok) {
