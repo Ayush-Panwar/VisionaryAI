@@ -3,25 +3,36 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET /api/images/[imageId]
 export async function GET(
   request: NextRequest,
-  { params }: { params: { imageId: string } }
+  context: { params: { imageId: string } }
 ) {
   try {
-    const imageId = params.imageId;
-    
+    const imageId = context.params.imageId;
+    if (!imageId) {
+      return NextResponse.json(
+        { error: 'Image ID is required' },
+        { status: 400 }
+      );
+    }
+
     // Call the backend API to get the image
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log(`Fetching image from: ${backendUrl}/images/${imageId}`);
+    
     const response = await fetch(`${backendUrl}/images/${imageId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      next: { revalidate: 60 }, // Add cache revalidation for better performance
+      cache: 'no-store'
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to fetch image');
+      const errorText = await response.text();
+      console.error(`Error response from backend: ${response.status} - ${errorText}`);
+      throw new Error(`Failed to fetch image: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {

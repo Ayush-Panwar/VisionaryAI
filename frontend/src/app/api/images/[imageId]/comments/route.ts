@@ -5,10 +5,16 @@ import { authOptions } from '@/lib/auth';
 // GET /api/images/[imageId]/comments
 export async function GET(
   request: NextRequest,
-  { params }: { params: { imageId: string } }
+  context: { params: { imageId: string } }
 ) {
   try {
-    const imageId = params.imageId;
+    const imageId = context.params.imageId;
+    if (!imageId) {
+      return NextResponse.json(
+        { error: 'Image ID is required' },
+        { status: 400 }
+      );
+    }
     
     // Call the backend API to get comments
     const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -43,7 +49,7 @@ export async function GET(
 // POST /api/images/[imageId]/comments
 export async function POST(
   request: NextRequest,
-  { params }: { params: { imageId: string } }
+  context: { params: { imageId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -54,7 +60,14 @@ export async function POST(
       );
     }
     
-    const imageId = params.imageId;
+    const imageId = context.params.imageId;
+    if (!imageId) {
+      return NextResponse.json(
+        { error: 'Image ID is required' },
+        { status: 400 }
+      );
+    }
+    
     const body = await request.json();
     
     // Call the backend API to create a comment
